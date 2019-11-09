@@ -16,6 +16,26 @@
   },
   "author": "Martin Hilscher",
   "license": "ISC",
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "setupFilesAfterEnv": [
+      "jest-extended"
+    ],
+    "testRegex": "((\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "testPathIgnorePatterns": [
+      "systemTests"
+    ],
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json",
+      "node"
+    ]
+  },
   "devDependencies": {
     "@stryker-mutator/core": "^2.2.1",
     "@stryker-mutator/jest-runner": "^2.2.1",
