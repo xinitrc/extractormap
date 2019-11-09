@@ -1,7 +1,7 @@
-export type ExtractorFunction<T> = (input: object) => T[keyof T];
+export type ExtractorFunction<T> = (input: object) => T;
 
 export type ExtractorMap<T> = {
-    [P in keyof T]: ExtractorMap<T[P]> | ExtractorFunction<T[P]>;
+    [P in keyof T]: ExtractorFunction<T[P]> | ExtractorMap<T[P]> ;
 }
 
 export function extract<T>(input: string, map: ExtractorMap<T>): T;
@@ -24,18 +24,33 @@ function isExtractionFn(e) {
 
 function extractFromObject<T>(input: object, map: ExtractorMap<T>): T {
     const tmp = {};
-    const keys: string[] = Object.keys(map);
+    const keys: string[] = Object.keys(map || {});
 
     keys.forEach((key: string) => {
-        const extractorEntry = map[key];
-
-        if (isExtractionFn(extractorEntry)) {
-            tmp[key] = extractorEntry(input);
-        } else {
-            tmp[key] = extract(input, extractorEntry);
-        }
+        tmp[key] = extractForKey(key, input, map);
     });
 
     return tmp as T;
 }
 
+function extractForKey<T>(key: string, input: object, map: ExtractorMap<T>) {
+    const extractor = map[key];
+
+    if (isExtractionFn(extractor)) {
+        return extractor(input);
+    } else {
+        return extract(input, extractor);
+    }
+    return undefined;
+}
+
+export function makeExtractingProxy<T>(input: object, map: ExtractorMap<T>): T {
+    return new Proxy({}, {
+        get(target, name, receiver) {
+            if (typeof name === 'string' && map[name])
+                return extractForKey<T>(name, input, map);
+            else
+                return undefined;
+        }
+    }) as unknown as T;
+}

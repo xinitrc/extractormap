@@ -6,13 +6,13 @@
   "scripts": {
     "test": "npm run test:unit && npm run test:integration && stryker run ",
     "test:unit": "jest tests/unit",
-    "test:integration": "jest test/integration",
+    "test:integration": "jest tests/integration",
     "test:unit:watch": "jest tests/unit --watch",
-    "test:integration:watch": "jest test/integration --watch",
+    "test:integration:watch": "jest tests/integration --watch",
     "test:unit:coverage": "jest tests/unit --coverage",
-    "test:integration:coverage": "jest test/integration --coverage",
+    "test:integration:coverage": "jest tests/integration --coverage",
     "test:unit:watch:coverage": "jest tests/unit --watch --coverage",
-    "test:integration:watch:coverage": "jest test/integration --watch --coverage"
+    "test:integration:watch:coverage": "jest tests/integration --watch --coverage"
   },
   "author": "Martin Hilscher",
   "license": "ISC",
