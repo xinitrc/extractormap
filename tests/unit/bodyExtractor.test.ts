@@ -1,4 +1,3 @@
-import {jpv} from '../../src/helper';
 import {body} from '../../src/awsAPIGatewayHelper';
 
 describe('bodyExtractor', () => {

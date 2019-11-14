@@ -8,6 +8,6 @@ module.exports = function(config) {
     coverageAnalysis: "off",
     tsconfigFile: "tsconfig.json",
     mutate: ["src/**/*.ts"],
-    thresholds: { high: 80, low: 60, break: 60 }
+    thresholds: { high: 90, low: 80, break: 80 }
   });
 };

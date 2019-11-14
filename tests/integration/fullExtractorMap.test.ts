@@ -1,117 +1,401 @@
-import {extract} from '../../src/ExtractorMap';
-import {constant, jpa, jpq, jpv} from '../../src/helper';
 import {body} from '../../src/awsAPIGatewayHelper';
+import {constant, jpa, jpq, jpv, extract} from '../../src/index';
+import {createExtractingProxy} from '../../src/ExtractorMap';
 
 describe('fullExtractorMap', () => {
     it('should return { foo: 1 } for { foo: 1 }, { foo: jpv("foo") }', () => {
-        expect(extract({foo: 1}, {foo: jpv('foo')})).toEqual({foo: 1});
+        expect(extract({foo: jpv('foo')}, {foo: 1})).toEqual({foo: 1});
     });
     it('should return { foo: 1 } for { bar: 1 }, { foo: jpv("bar") }', () => {
-        expect(extract({bar: 1}, {foo: jpv('bar')})).toEqual({foo: 1});
+        expect(extract({foo: jpv('bar')}, {bar: 1})).toEqual({foo: 1});
     });
     it('should return { foo: 1 } for { body: 1 }, { foo: body() }', () => {
-        expect(extract({body: 1}, {foo: body()})).toEqual({foo: 1});
+        expect(extract({foo: body()}, {body: 1})).toEqual({foo: 1});
     });
     it('should return { foo: 1 } for { body: "1" }, { foo: body(x => parseInt(x, 10) }', () => {
-        expect(extract({body: '1'}, {foo: body(x => parseInt(x, 10))})).toEqual({foo: 1});
+        expect(extract({foo: body(x => parseInt(x, 10))}, {body: '1'})).toEqual({foo: 1});
     });
     it('should return { foo: 1 } for { body: 1 }, {foo: body("foo")}', () => {
-        expect(extract({body: {foo: 1}}, {foo: body('foo')})).toEqual({foo: 1});
+        expect(extract({foo: body('foo')}, {body: {foo: 1}})).toEqual({foo: 1});
     });
     it('should return { foo: 1 } for { body: 1 }, {foo: 1 }', () => {
-        expect(extract({body: {foo: 1}}, {foo: constant(1)})).toEqual({foo: 1});
+        expect(extract({foo: constant(1)}, {body: {foo: 5}})).toEqual({foo: 1});
     });
     it('should return { foo: [1, 2, 3] } for { foo: jpv("body") }, { body: [1, 2, 3] }', () => {
-        expect(extract({body: [1, 2, 3]}, {foo: jpv('body')})).toEqual({foo: [1, 2, 3]});
+        expect(extract({foo: jpv('body')}, {body: [1, 2, 3]})).toEqual({foo: [1, 2, 3]});
     });
     it('should return { foo: [1, 2, 3] } for { foo: jpq("$..blub") }, { body: { blub: 1, key1: {blub: 2}, key2: {blub: 3}}}}', () => {
-        expect(extract({
+        expect(extract({foo: jpq('$..blub')}, {
             body: {
                 blub: 1,
                 key1: {blub: 2},
                 key2: {blub: 3}
             }
-        }, {foo: jpq('$..blub')})).toEqual({foo: [1, 2, 3]});
+        })).toEqual({foo: [1, 2, 3]});
     });
     it('should return { foo: [1, 2, 3] } for { foo: body(".blub") }, { body: { blub: 1, key1: {blub: 2}, key2: {blub: 3}}}}', () => {
-        expect(extract({
+        expect(extract({foo: body('.blub')}, {
             body: {
                 blub: 1,
                 key1: {blub: 2},
                 key2: {blub: 3}
             }
-        }, {foo: body('.blub')})).toEqual({foo: 1});
+        })).toEqual({foo: 1});
     });
     it('should return { foo: 2 } for { foo: body(".[?(@.blub > 1)].blub") }, { body: { blub: 1, key1: {blub: 2}, key2: {blub: 3}}}}', () => {
-        expect(extract({
+        expect(extract({foo: body('.[?(@.blub > 1)].blub')}, {
             body: {
                 blub: 1,
                 key1: {blub: 2},
                 key2: {blub: 3}
             }
-        }, {foo: body('.[?(@.blub > 1)].blub')})).toEqual({foo: 2});
+        })).toEqual({foo: 2});
     });
     it('should return { foo: 6 } for { foo: jpc("$..[?(@.blub > 1)].blub") }, { body: { blub: 1, key1: {blub: 2}, key2: {blub: 3}}}}', () => {
-        expect(extract({
+        expect(extract({foo: jpq('$..[?(@.blub > 1)].blub')}, {
             body: {
                 blub: 1,
                 key1: {blub: 2},
                 key2: {blub: 3}
             }
-        }, {foo: jpq('$..[?(@.blub > 1)].blub')})).toEqual({foo: [2, 3]});
+        })).toEqual({foo: [2, 3]});
     });
     it('should return { foo: 6 } for { foo: jpq("$..blub", x => parseInt(x, 10)) }, { body: { blub: "1", key1: {blub: "2"}, key2: {blub: "3"}}}}', () => {
-        expect(extract({
+        expect(extract({foo: jpq('$..blub', x => parseInt(x, 10))}, {
             body: {
                 blub: '1',
                 key1: {blub: '2'},
                 key2: {blub: '3'}
             }
-        }, {foo: jpq('$..blub', x => parseInt(x, 10))})).toEqual({foo: [1, 2, 3]});
+        })).toEqual({foo: [1, 2, 3]});
     });
     it('should return { foo: 6 } for { foo: jpa("$..blub", x => x.reduce((a, b) => a + b, 0)) }, { body: { blub: "1", key1: {blub: "2"}, key2: {blub: "3"}}}}', () => {
-        expect(extract({
+        expect(extract({foo: jpa('$..blub', x => x.reduce((a, b) => a + b, 0))}, {
             body: {
                 blub: 1,
                 key1: {blub: 2},
                 key2: {blub: 3}
             }
-        }, {foo: jpa('$..blub', x => x.reduce((a, b) => a + b, 0))})).toEqual({foo: 6});
+        })).toEqual({foo: 6});
     });
     it('should return { foo: 6 } for { foo: jpa("$..blub", x => x.reduce((a, b) => a * b, 1)) }, { body: { blub: "1", key1: {blub: "2"}, key2: {blub: "3"}}}}', () => {
-        expect(extract({
+        expect(extract({foo: jpa('$..blub', x => x.reduce((a, b) => a * b, 1))}, {
             body: {
                 blub: 1,
                 key1: {blub: 2},
                 key2: {blub: 3}
             }
-        }, {foo: jpa('$..blub', x => x.reduce((a, b) => a * b, 1))})).toEqual({foo: 6});
+        })).toEqual({foo: 6});
     });
-    it('should return { foo: 6 } for { foo: jpa("$..blub", x => x.reduce((a, b) => a * b, 1)) }, { body: { blub: "1", key1: {blub: "2"}, key2: {blub: "3"}}}}', () => {
-        expect(extract(JSON.stringify({
-            body: {
-                blub: 1,
-                key1: {blub: 2},
-                key2: {blub: 3}
-            }
-        }), {foo: jpa('$..blub', x => x.reduce((a, b) => a * b, 1))})).toEqual({foo: 6});
-    });
-    it('should return { foo: 3 } for { foo: jpa("$..blub", x => x.length) }, { body: { blub: "1", key1: {blub: "2"}, key2: {blub: "3"}}}}', () => {
-        expect(extract(JSON.stringify({
-            body: {
-                blub: 1,
-                key1: {blub: 2},
-                key2: {blub: 3}
-            }
-        }), {foo: jpa('$..blub', x => x.length)})).toEqual({foo: 3});
-    });
+
     it('should return { foo: { bar: 5 } for { foo: { bar: body() }}, { body: 5 }', () => {
-        expect(extract({ body: 5 }, {foo: { bar: body()}})).toEqual({foo: {bar: 5}});
+        expect(extract({foo: {bar: body()}}, {body: 5})).toEqual({foo: {bar: 5}});
     });
     it('should return { foo: { bar: 1 } for { foo: { bar: body() }}, { body: 1, pathParamters: "7" }', () => {
-        expect(extract({ body: 1, pathParamters: "7" }, {foo: { bar: body()}})).toEqual({foo: {bar: 1}});
+        expect(extract({foo: {bar: body()}}, {body: 1, pathParamters: '7'})).toEqual({foo: {bar: 1}});
     });
     it('should return { } for { foo: { bar: body() }}, { blub: 1, pathParamters: "7" }', () => {
-        expect(extract({ blub: 1, pathParamters: "7" }, {foo: { bar: body()}})).toEqual({ foo: { bar: undefined }});
+        expect(extract({foo: {bar: body()}}, {blub: 1, pathParamters: '7'})).toEqual({ foo: { bar: undefined }});
     });
+
+
+    it('should return { foo: 1 } for { foo: 1 }, { foo: jpv("foo") } in curried form', () => {
+        expect(extract({foo: jpv('foo')})({foo: 1})).toEqual({foo: 1});
+    });
+    it('should return { foo: 1 } for { bar: 1 }, { foo: jpv("bar") } in curried form', () => {
+        expect(extract({foo: jpv('bar')})({bar: 1})).toEqual({foo: 1});
+    });
+    it('should return { foo: 1 } for { body: 1 }, { foo: body() } in curried form', () => {
+        expect(extract({foo: body()})({body: 1})).toEqual({foo: 1});
+    });
+    it('should return { foo: 1 } for { body: "1" }, { foo: body(x => parseInt(x, 10) } in curried form', () => {
+        expect(extract({foo: body(x => parseInt(x, 10))})({body: '1'})).toEqual({foo: 1});
+    });
+    it('should return { foo: 1 } for { body: 1 }, {foo: body("foo")} in curried form', () => {
+        expect(extract({foo: body('foo')})({body: {foo: 1}})).toEqual({foo: 1});
+    });
+    it('should return { foo: 1 } for { body: 1 }, {foo: 1 } in curried form', () => {
+        expect(extract({foo: constant(1)})({body: {foo: 5}})).toEqual({foo: 1});
+    });
+    it('should return { foo: [1, 2, 3] } for { foo: jpv("body") }, { body: [1, 2, 3] } in curried form', () => {
+        expect(extract({foo: jpv('body')})({body: [1, 2, 3]})).toEqual({foo: [1, 2, 3]});
+    });
+    it('should return { foo: [1, 2, 3] } for { foo: jpq("$..blub") }, { body: { blub: 1, key1: {blub: 2}, key2: {blub: 3}}}} in curried form', () => {
+        expect(extract({foo: jpq('$..blub')})({
+            body: {
+                blub: 1,
+                key1: {blub: 2},
+                key2: {blub: 3}
+            }
+        })).toEqual({foo: [1, 2, 3]});
+    });
+    it('should return { foo: [1, 2, 3] } for { foo: body(".blub") }, { body: { blub: 1, key1: {blub: 2}, key2: {blub: 3}}}} in curried form', () => {
+        expect(extract({foo: body('.blub')})({
+            body: {
+                blub: 1,
+                key1: {blub: 2},
+                key2: {blub: 3}
+            }
+        })).toEqual({foo: 1});
+    });
+    it('should return { foo: 2 } for { foo: body(".[?(@.blub > 1)].blub") }, { body: { blub: 1, key1: {blub: 2}, key2: {blub: 3}}}} in curried form', () => {
+        expect(extract({foo: body('.[?(@.blub > 1)].blub')})({
+            body: {
+                blub: 1,
+                key1: {blub: 2},
+                key2: {blub: 3}
+            }
+        })).toEqual({foo: 2});
+    });
+    it('should return { foo: 6 } for { foo: jpc("$..[?(@.blub > 1)].blub") }, { body: { blub: 1, key1: {blub: 2}, key2: {blub: 3}}}} in curried form', () => {
+        expect(extract({foo: jpq('$..[?(@.blub > 1)].blub')})({
+            body: {
+                blub: 1,
+                key1: {blub: 2},
+                key2: {blub: 3}
+            }
+        })).toEqual({foo: [2, 3]});
+    });
+    it('should return { foo: 6 } for { foo: jpq("$..blub", x => parseInt(x, 10)) }, { body: { blub: "1", key1: {blub: "2"}, key2: {blub: "3"}}}} in curried form', () => {
+        expect(extract({foo: jpq('$..blub', x => parseInt(x, 10))})({
+            body: {
+                blub: '1',
+                key1: {blub: '2'},
+                key2: {blub: '3'}
+            }
+        })).toEqual({foo: [1, 2, 3]});
+    });
+
+    it('should return { foo: 6 } for { foo: jpa("$..blub", x => x.reduce((a, b) => a + b, 0)) }, { body: { blub: "1", key1: {blub: "2"}, key2: {blub: "3"}}}} in curried form', () => {
+        expect(extract({foo: jpa('$..blub', x => x.reduce((a, b) => a + b, 0))})({
+            body: {
+                blub: 1,
+                key1: {blub: 2},
+                key2: {blub: 3}
+            }
+        })).toEqual({foo: 6});
+    });
+    it('should return { foo: 6 } for { foo: jpa("$..blub", x => x.reduce((a, b) => a * b, 1)) }, { body: { blub: "1", key1: {blub: "2"}, key2: {blub: "3"}}}} in curried form', () => {
+        expect(extract({foo: jpa('$..blub', x => x.reduce((a, b) => a * b, 1))})({
+            body: {
+                blub: 1,
+                key1: {blub: 2},
+                key2: {blub: 3}
+            }
+        })).toEqual({foo: 6});
+    });
+
+    it('should return { foo: { bar: 5 } for { foo: { bar: body() }}, { body: 5 } in curried form', () => {
+        expect(extract({foo: {bar: body()}})({body: 5})).toEqual({foo: {bar: 5}});
+    });
+    it('should return { foo: { bar: 1 } for { foo: { bar: body() }}, { body: 1, pathParamters: "7" } in curried form', () => {
+        expect(extract({foo: {bar: body()}})({body: 1, pathParamters: '7'})).toEqual({foo: {bar: 1}});
+    });
+    it('should return { } for { foo: { bar: body() }}, { blub: 1, pathParamters: "7" } in curried form', () => {
+        expect(extract({foo: {bar: body()}})({blub: 1, pathParamters: '7'})).toEqual({ foo: { bar: undefined }});
+    });
+
+
+
+
+
+
+
+
+
+
+
+
+    it('should return { foo: 1 } for { foo: 1 }, { foo: jpv("foo") }', () => {
+        expect(createExtractingProxy({foo: jpv('foo')}, {foo: 1}).foo).toEqual(1);
+    });
+    it('should return { foo: 1 } for { bar: 1 }, { foo: jpv("bar") }', () => {
+        expect(createExtractingProxy({foo: jpv('bar')}, {bar: 1}).foo).toEqual(1);
+    });
+    it('should return { foo: 1 } for { body: 1 }, { foo: body() }', () => {
+        expect(createExtractingProxy({foo: body()}, {body: 1}).foo).toEqual(1);
+    });
+    it('should return { foo: 1 } for { body: "1" }, { foo: body(x => parseInt(x, 10) }', () => {
+        expect(createExtractingProxy({foo: body(x => parseInt(x, 10))}, {body: '1'}).foo).toEqual(1);
+    });
+    it('should return { foo: 1 } for { body: 1 }, {foo: body("foo")}', () => {
+        expect(createExtractingProxy({foo: body('foo')}, {body: {foo: 1}}).foo).toEqual(1);
+    });
+    it('should return { foo: 1 } for { body: 1 }, {foo: 1 }', () => {
+        expect(createExtractingProxy({foo: constant(1)}, {body: {foo: 5}}).foo).toEqual(1);
+    });
+    it('should return { foo: [1, 2, 3] } for { foo: jpv("body") }, { body: [1, 2, 3] }', () => {
+        expect(createExtractingProxy({foo: jpv('body')}, {body: [1, 2, 3]}).foo).toEqual([1, 2, 3]);
+    });
+    it('should return { foo: [1, 2, 3] } for { foo: jpq("$..blub") }, { body: { blub: 1, key1: {blub: 2}, key2: {blub: 3}}}}', () => {
+        expect(createExtractingProxy({foo: jpq('$..blub')}, {
+            body: {
+                blub: 1,
+                key1: {blub: 2},
+                key2: {blub: 3}
+            }
+        }).foo).toEqual([1, 2, 3]);
+    });
+    it('should return { foo: [1, 2, 3] } for { foo: body(".blub") }, { body: { blub: 1, key1: {blub: 2}, key2: {blub: 3}}}}', () => {
+        expect(createExtractingProxy({foo: body('.blub')}, {
+            body: {
+                blub: 1,
+                key1: {blub: 2},
+                key2: {blub: 3}
+            }
+        }).foo).toEqual(1);
+    });
+    it('should return { foo: 2 } for { foo: body(".[?(@.blub > 1)].blub") }, { body: { blub: 1, key1: {blub: 2}, key2: {blub: 3}}}}', () => {
+        expect(createExtractingProxy({foo: body('.[?(@.blub > 1)].blub')}, {
+            body: {
+                blub: 1,
+                key1: {blub: 2},
+                key2: {blub: 3}
+            }
+        }).foo).toEqual(2);
+    });
+    it('should return { foo: 6 } for { foo: jpc("$..[?(@.blub > 1)].blub") }, { body: { blub: 1, key1: {blub: 2}, key2: {blub: 3}}}}', () => {
+        expect(createExtractingProxy({foo: jpq('$..[?(@.blub > 1)].blub')}, {
+            body: {
+                blub: 1,
+                key1: {blub: 2},
+                key2: {blub: 3}
+            }
+        }).foo).toEqual([2, 3]);
+    });
+    it('should return { foo: 6 } for { foo: jpq("$..blub", x => parseInt(x, 10)) }, { body: { blub: "1", key1: {blub: "2"}, key2: {blub: "3"}}}}', () => {
+        expect(createExtractingProxy({foo: jpq('$..blub', x => parseInt(x, 10))}, {
+            body: {
+                blub: '1',
+                key1: {blub: '2'},
+                key2: {blub: '3'}
+            }
+        }).foo).toEqual([1, 2, 3]);
+    });
+    it('should return { foo: 6 } for { foo: jpa("$..blub", x => x.reduce((a, b) => a + b, 0)) }, { body: { blub: "1", key1: {blub: "2"}, key2: {blub: "3"}}}}', () => {
+        expect(createExtractingProxy({foo: jpa('$..blub', x => x.reduce((a, b) => a + b, 0))}, {
+            body: {
+                blub: 1,
+                key1: {blub: 2},
+                key2: {blub: 3}
+            }
+        }).foo).toEqual(6);
+    });
+    it('should return { foo: 6 } for { foo: jpa("$..blub", x => x.reduce((a, b) => a * b, 1)) }, { body: { blub: "1", key1: {blub: "2"}, key2: {blub: "3"}}}}', () => {
+        expect(createExtractingProxy({foo: jpa('$..blub', x => x.reduce((a, b) => a * b, 1))}, {
+            body: {
+                blub: 1,
+                key1: {blub: 2},
+                key2: {blub: 3}
+            }
+        }).foo).toEqual(6);
+    });
+
+    it('should return { foo: { bar: 5 } for { foo: { bar: body() }}, { body: 5 }', () => {
+        expect(createExtractingProxy({foo: {bar: body()}}, {body: 5}).foo).toEqual({bar: 5});
+    });
+    it('should return { foo: { bar: 1 } for { foo: { bar: body() }}, { body: 1, pathParamters: "7" }', () => {
+        expect(createExtractingProxy({foo: {bar: body()}}, {body: 1, pathParamters: '7'}).foo).toEqual({bar: 1});
+    });
+    it('should return { } for { foo: { bar: body() }}, { blub: 1, pathParamters: "7" }', () => {
+        expect(createExtractingProxy({foo: {bar: body()}}, {blub: 1, pathParamters: '7'}).foo).toEqual({ bar: undefined });
+    });
+
+
+    it('should return { foo: 1 } for { foo: 1 }, { foo: jpv("foo") } in curried form', () => {
+        expect(createExtractingProxy({foo: jpv('foo')})({foo: 1}).foo).toEqual(1);
+    });
+    it('should return { foo: 1 } for { bar: 1 }, { foo: jpv("bar") } in curried form', () => {
+        expect(createExtractingProxy({foo: jpv('bar')})({bar: 1}).foo).toEqual(1);
+    });
+    it('should return { foo: 1 } for { body: 1 }, { foo: body() } in curried form', () => {
+        expect(createExtractingProxy({foo: body()})({body: 1}).foo).toEqual(1);
+    });
+    it('should return { foo: 1 } for { body: "1" }, { foo: body(x => parseInt(x, 10) } in curried form', () => {
+        expect(createExtractingProxy({foo: body(x => parseInt(x, 10))})({body: '1'}).foo).toEqual(1);
+    });
+    it('should return { foo: 1 } for { body: 1 }, {foo: body("foo")} in curried form', () => {
+        expect(createExtractingProxy({foo: body('foo')})({body: {foo: 1}}).foo).toEqual(1);
+    });
+    it('should return { foo: 1 } for { body: 1 }, {foo: 1 } in curried form', () => {
+        expect(createExtractingProxy({foo: constant(1)})({body: {foo: 5}}).foo).toEqual(1);
+    });
+    it('should return { foo: [1, 2, 3] } for { foo: jpv("body") }, { body: [1, 2, 3] } in curried form', () => {
+        expect(createExtractingProxy({foo: jpv('body')})({body: [1, 2, 3]}).foo).toEqual([1, 2, 3]);
+    });
+    it('should return { foo: [1, 2, 3] } for { foo: jpq("$..blub") }, { body: { blub: 1, key1: {blub: 2}, key2: {blub: 3}}}} in curried form', () => {
+        expect(createExtractingProxy({foo: jpq('$..blub')})({
+            body: {
+                blub: 1,
+                key1: {blub: 2},
+                key2: {blub: 3}
+            }
+        }).foo).toEqual([1, 2, 3]);
+    });
+    it('should return { foo: [1, 2, 3] } for { foo: body(".blub") }, { body: { blub: 1, key1: {blub: 2}, key2: {blub: 3}}}} in curried form', () => {
+        expect(createExtractingProxy({foo: body('.blub')})({
+            body: {
+                blub: 1,
+                key1: {blub: 2},
+                key2: {blub: 3}
+            }
+        }).foo).toEqual(1);
+    });
+    it('should return { foo: 2 } for { foo: body(".[?(@.blub > 1)].blub") }, { body: { blub: 1, key1: {blub: 2}, key2: {blub: 3}}}} in curried form', () => {
+        expect(createExtractingProxy({foo: body('.[?(@.blub > 1)].blub')})({
+            body: {
+                blub: 1,
+                key1: {blub: 2},
+                key2: {blub: 3}
+            }
+        }).foo).toEqual(2);
+    });
+    it('should return { foo: 6 } for { foo: jpc("$..[?(@.blub > 1)].blub") }, { body: { blub: 1, key1: {blub: 2}, key2: {blub: 3}}}} in curried form', () => {
+        expect(createExtractingProxy({foo: jpq('$..[?(@.blub > 1)].blub')})({
+            body: {
+                blub: 1,
+                key1: {blub: 2},
+                key2: {blub: 3}
+            }
+        }).foo).toEqual([2, 3]);
+    });
+    it('should return { foo: 6 } for { foo: jpq("$..blub", x => parseInt(x, 10)) }, { body: { blub: "1", key1: {blub: "2"}, key2: {blub: "3"}}}} in curried form', () => {
+        expect(createExtractingProxy({foo: jpq('$..blub', x => parseInt(x, 10))})({
+            body: {
+                blub: '1',
+                key1: {blub: '2'},
+                key2: {blub: '3'}
+            }
+        }).foo).toEqual([1, 2, 3]);
+    });
+
+    it('should return { foo: 6 } for { foo: jpa("$..blub", x => x.reduce((a, b) => a + b, 0)) }, { body: { blub: "1", key1: {blub: "2"}, key2: {blub: "3"}}}} in curried form', () => {
+        expect(createExtractingProxy({foo: jpa('$..blub', x => x.reduce((a, b) => a + b, 0))})({
+            body: {
+                blub: 1,
+                key1: {blub: 2},
+                key2: {blub: 3}
+            }
+        }).foo).toEqual(6);
+    });
+    it('should return { foo: 6 } for { foo: jpa("$..blub", x => x.reduce((a, b) => a * b, 1)) }, { body: { blub: "1", key1: {blub: "2"}, key2: {blub: "3"}}}} in curried form', () => {
+        expect(createExtractingProxy({foo: jpa('$..blub', x => x.reduce((a, b) => a * b, 1))})({
+            body: {
+                blub: 1,
+                key1: {blub: 2},
+                key2: {blub: 3}
+            }
+        }).foo).toEqual(6);
+    });
+
+    it('should return { foo: { bar: 5 } for { foo: { bar: body() }}, { body: 5 } in curried form', () => {
+        expect(createExtractingProxy({foo: {bar: body()}})({body: 5}).foo).toEqual({bar: 5});
+    });
+    it('should return { foo: { bar: 1 } for { foo: { bar: body() }}, { body: 1, pathParamters: "7" } in curried form', () => {
+        expect(createExtractingProxy({foo: {bar: body()}})({body: 1, pathParamters: '7'}).foo).toEqual({bar: 1});
+    });
+    it('should return { } for { foo: { bar: body() }}, { blub: 1, pathParamters: "7" } in curried form', () => {
+        expect(createExtractingProxy({foo: {bar: body()}})({blub: 1, pathParamters: '7'}).foo).toEqual( { bar: undefined });
+    });
+
 });

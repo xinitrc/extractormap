@@ -4,9 +4,7 @@
     "emitDecoratorMetadata": true,
     "module": "commonjs",
     "sourceMap": true,
-    "target": "ES6",
-    "typeRoots": ["./node_modules/@types"],
-    "types": ["node"]
+    "target": "es6"
   },
-  "include": ["src/**/*.ts", "tests/**/*.ts", "./node_modules/@types"]
+  "include": ["src/**/*.ts", "tests/**/*.ts"]
 }
