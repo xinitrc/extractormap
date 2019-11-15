@@ -1,0 +1,14 @@
+version: 0.2
+phases:
+  install:
+    commands:
+      - echo Entered the install phase...
+      - echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
+  build:
+    commands:
+      - echo Entered the build phase...
+      - npm run publish
+  post_build:
+    commands:
+      - echo Entered the post_build phase...
+      - echo Build completed on `date`
