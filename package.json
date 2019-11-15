@@ -12,7 +12,7 @@
     "test:mutation": "./node_modules/stryker-cli/bin/stryker-cli run",
     "test": "npm run lint; npm run test:unit && npm run test:mutation",
     "build": "rm -rf ./lib && ./node_modules/typescript/bin/tsc",
-    "deploy": "git push deploy master"
+    "deploy": "git push origin master && git push deploy master"
   },
   "author": "Martin Hilscher",
   "license": "MIT",
