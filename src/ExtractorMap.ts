@@ -37,7 +37,7 @@ export function createExtractingProxy<T>(eMap: ExtractorMap<T>, input?: object):
     } else {
         return new Proxy({}, {
             get(_: any, name: PropertyKey): any {
-                if (typeof name === 'string' && _isKeyOfT(eMap, name)) {
+                if (_isKeyOfT(eMap, name)) {
                     return _extractForKey<T>(eMap, name, input);
                 } else {
                     throw new ReferenceError('Property "' + name.toString() + '" does not exist.');
