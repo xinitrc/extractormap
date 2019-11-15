@@ -299,6 +299,13 @@ describe('fullExtractorMap', () => {
     it('should return { } for { foo: { bar: jpv("body") }}, { blub: 1, pathParamters: "7" }', () => {
         expect(createExtractingProxy({foo: {bar: jpv("body")}}, {blub: 1, pathParamters: '7'}).foo).toEqual({ bar: undefined });
     });
+    it('should return { } for { foo: { bar: jpv("body") }}, { blub: 1, pathParamters: "7" }', () => {
+        expect(() => (createExtractingProxy({foo: {bar: jpv("body")}}, {blub: 1, pathParamters: '7'}) as any).blub).toThrow();
+    });
+    it('should return { } for { foo: { bar: jpv("body") }}, { blub: 1, pathParamters: "7" }', () => {
+        expect(() => (createExtractingProxy({foo: {bar: jpv("body")}}, {blub: 1, pathParamters: '7'}) as any).blub).toThrow('Property "blub" does not exist.');
+    });
+
 
 
     it('should return { foo: 1 } for { foo: 1 }, { foo: jpv("foo") } in curried form', () => {
@@ -396,5 +403,10 @@ describe('fullExtractorMap', () => {
     it('should return { } for { foo: { bar: jpv("body") }}, { blub: 1, pathParamters: "7" } in curried form', () => {
         expect(createExtractingProxy({foo: {bar: jpv("body")}})({blub: 1, pathParamters: '7'}).foo).toEqual( { bar: undefined });
     });
-
+    it('should return throw for { foo: { bar: jpv("body") }}, { blub: 1, pathParamters: "7" } in curried form accessing nonexisting key', () => {
+        expect(() => (createExtractingProxy({foo: {bar: jpv("body")}})({blub: 1, pathParamters: '7'}) as any).blub).toThrow();
+    });
+    it('should return throw for { foo: { bar: jpv("body") }}, { blub: 1, pathParamters: "7" } in curried form accessing nonexisting key', () => {
+        expect(() => (createExtractingProxy({foo: {bar: jpv("body")}})({blub: 1, pathParamters: '7'}) as any).blub).toThrow('Property "blub" does not exist.');
+    });
 });
