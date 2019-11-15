@@ -4,19 +4,18 @@
   "description": "Library to extrace one JSON Datastructure from Another",
   "main": "index.js",
   "scripts": {
-    "lint": "tslint -c ./tslint.json './src/**/*.ts'",
-    "test": "npm run test:unit && npm run test:integration && stryker run ",
-    "test:unit": "jest tests/unit",
-    "test:integration": "jest tests/integration",
-    "test:unit:watch": "jest tests/unit --watch",
-    "test:integration:watch": "jest tests/integration --watch",
-    "test:unit:coverage": "jest tests/unit --coverage",
-    "test:integration:coverage": "jest tests/integration --coverage",
-    "test:unit:watch:coverage": "jest tests/unit --watch --coverage",
-    "test:integration:watch:coverage": "jest tests/integration --watch --coverage"
+    "lint": "./node_modules/tslint/bin/tslint -c ./tslint.json './src/**/*.ts'",
+    "test:unit": "./node_modules/jest/bin/jest.js tests/unit",
+    "test:unit:watch": "./node_modules/jest/bin/jest.js tests/unit --watch",
+    "test:unit:coverage": "./node_modules/jest/bin/jest.js tests/unit --coverage",
+    "test:unit:watch:coverage": "./node_modules/jest/bin/jest.js tests/unit --watch --coverage",
+    "test:mutation": "./node_modules/stryker-cli/bin/stryker-cli run",
+    "test": "npm run lint; npm run test:unit && npm run test:mutation",
+    "build": "rm -rf ./lib && tsc",
+    "prepublishOnly": "npm run build"
   },
   "author": "Martin Hilscher",
-  "license": "ISC",
+  "license": "MIT",
   "jest": {
     "transform": {
       "^.+\\.tsx?$": "ts-jest"
@@ -46,7 +45,9 @@
     "@types/node": "^12.12.7",
     "jest": "^24.9.0",
     "jest-extended": "^0.11.2",
+    "stryker-cli": "^1.0.0",
     "ts-jest": "^24.1.0",
+    "tslint": "^5.20.1",
     "tslint-clean-code": "^0.2.10",
     "typescript": "^3.7.2"
   },

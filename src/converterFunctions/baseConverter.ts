@@ -1,18 +1,17 @@
 import {ConverterFunction} from './definitions';
-import {ExtractorFunction} from '../ExtractorMap';
+
+function _answerWithDefault(inputValues: any, forVals: any[]): boolean {
+    return forVals.filter((forVal: any) => inputValues === forVal).length > 0;
+}
 
 export function identity<T>(x: T): T {
     return x;
 }
 
-export function retypingIdentity<T>(x: any): T {
-    return x as T;
-}
+export function defaultTo<T>(defaultValue: T, forVals: any[] = [undefined]): ConverterFunction<T> {
+    return (inputValue: any): T => {
+        const answerWithDefault: boolean = _answerWithDefault(inputValue, forVals);
 
-export function defaultTo<T>(defaultValue: any, fn: ExtractorFunction<T> = retypingIdentity): ConverterFunction<T> {
-    return (inputObject: any): T => {
-        const inputValue = typeof inputObject === 'undefined' ? defaultValue : inputObject;
-
-        return fn(inputValue);
+        return answerWithDefault ? defaultValue : inputValue;
     };
 }

@@ -3,7 +3,7 @@ import {identity} from '../converterFunctions/baseConverter';
 import {ConverterFunction} from '../converterFunctions/definitions';
 import {ExtractorFunction} from '../ExtractorMap';
 
-export function jpa<T>(jsonPath: string, convert: ConverterFunction<T> = identity): ExtractorFunction<T>{
+export function jpa<T>(jsonPath: string, convert: ConverterFunction<T> = identity): ExtractorFunction<T> {
     return (inputObject: object): T => {
         return convert(JSONPath({json: inputObject, path: jsonPath}));
     };
