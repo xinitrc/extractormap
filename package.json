@@ -1,8 +1,7 @@
 {
   "name": "@jungehaie/extractormap",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Library to extrace one JSON datastructure from another",
-  "main": "index.js",
   "scripts": {
     "lint": "./node_modules/tslint/bin/tslint -c ./tslint.json './src/**/*.ts'",
     "test:unit": "./node_modules/jest/bin/jest.js tests/unit",
@@ -16,6 +15,13 @@
   },
   "author": "Martin Hilscher",
   "license": "MIT",
+  "types": "lib/index.d.ts",
+  "main": "lib/index.js",
+  "module": "lib/index.js",
+  "keywords": [
+    "data mapper",
+    "extractor"
+  ],
   "jest": {
     "transform": {
       "^.+\\.tsx?$": "ts-jest"
