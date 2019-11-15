@@ -1,5 +1,5 @@
 {
-  "name": "extractormap",
+  "name": "@jungehaie/extractormap",
   "version": "0.0.1",
   "description": "Library to extrace one JSON datastructure from another",
   "main": "index.js",
