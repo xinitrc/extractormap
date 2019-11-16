@@ -1,6 +1,6 @@
 {
   "name": "@jungehaie/extractormap",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Library to extrace one JSON datastructure from another",
   "scripts": {
     "lint": "./node_modules/tslint/bin/tslint -c ./tslint.json './src/**/*.ts'",
@@ -40,7 +40,15 @@
       "jsx",
       "json",
       "node"
-    ]
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 90,
+        "functions": 90,
+        "lines": 90,
+        "statements": -10
+      }
+    }
   },
   "devDependencies": {
     "@stryker-mutator/core": "^2.2.1",

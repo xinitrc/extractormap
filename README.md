@@ -85,9 +85,7 @@ Given a ```json path```
 and an optional result transformer which defaults to the identity function, returns a function that returns a
 (transformed) array of all properties value that match.
 #### ```constant<T>(value: T): (input: object => T)```:   
-Given a ```json path```
-and an optional result transformer which defaults to the identity function, returns a function that returns a
-(transformed) array of all properties value that match.
+Will return a function returning the given constant discregarding the input object completely.
 
 
 Given those helper functions the ExtractorMap from above could have been written as:

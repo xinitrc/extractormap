@@ -20,7 +20,7 @@ function isExtractorFunction<T>(e: ExtractorFunction<T> | ExtractorMap<T>): e is
 
 function extractFromObject<T>(inputObject: object, extractionMap: ExtractorMap<T>): T {
     const resultObject: Partial<T> = {};
-    const extractionKeys: Array<keyof T> = Object.keys(extractionMap || {}) as Array<keyof T>;
+    const extractionKeys: Array<keyof T> = Object.keys(extractionMap) as Array<keyof T>;
 
     extractionKeys.forEach((extractionKey: keyof T): void => {
         resultObject[extractionKey] = _extractForKey(extractionMap, extractionKey, inputObject);

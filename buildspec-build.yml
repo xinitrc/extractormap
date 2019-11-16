@@ -9,7 +9,7 @@ phases:
     commands:
       - echo Entered the build phase...
       - npm run lint
-      - npm run test:unit
+      - npm run test:unit:coverage
       - npm run test:mutation
       - npm run build
   post_build:

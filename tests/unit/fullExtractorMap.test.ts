@@ -375,6 +375,15 @@ describe('fullExtractorMap', () => {
         }).foo).toEqual([1, 2, 3]);
     });
 
+    it('should return { foo: 6 } for { foo: jpa("$..blub") }, { body: { blub: "1", key1: {blub: "2"}, key2: {blub: "3"}}}} in curried form', () => {
+        expect(createExtractingProxy({foo: jpa('$..blub')})({
+            body: {
+                blub: 1,
+                key1: {blub: 2},
+                key2: {blub: 3}
+            }
+        }).foo).toEqual([1, 2, 3]);
+    });
     it('should return { foo: 6 } for { foo: jpa("$..blub", x => x.reduce((a, b) => a + b, 0)) }, { body: { blub: "1", key1: {blub: "2"}, key2: {blub: "3"}}}} in curried form', () => {
         expect(createExtractingProxy({foo: jpa('$..blub', x => x.reduce((a, b) => a + b, 0))})({
             body: {
