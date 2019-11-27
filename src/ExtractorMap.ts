@@ -40,7 +40,7 @@ export function createExtractingProxy<T>(eMap: ExtractorMap<T>, input?: object):
                 if (_isKeyOfT(eMap, name)) {
                     return _extractForKey<T>(eMap, name, input);
                 } else {
-                    throw new ReferenceError('Property "' + name.toString() + '" does not exist.');
+                    throw new ReferenceError(`Property "${name.toString()}" does not exist.`);
                 }
             }
         }) as unknown as T;

@@ -23,7 +23,7 @@ to the type of the resulting object ```T```.
 
 Given type target type ```T```:
 
-```json
+```typescrip
 {
   "foo": number,
   "bar": string
@@ -35,7 +35,7 @@ and an input
 ```json
 {
   "qux": 1,
-  "quux": '2',
+  "quux": "2",
 }
 ```
 
