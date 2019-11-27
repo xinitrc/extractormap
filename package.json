@@ -1,6 +1,6 @@
 {
   "name": "@jungehaie/extractormap",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Library to extrace one JSON datastructure from another",
   "scripts": {
     "lint": "./node_modules/tslint/bin/tslint -c ./tslint.json './src/**/*.ts'",

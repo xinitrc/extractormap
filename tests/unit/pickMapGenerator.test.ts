@@ -1,10 +1,11 @@
-import { pickMapGenerator } from "../../src";
+import {extract, pickMapGenerator} from '../../src';
 
 interface Person {
     firstName: string;
     lastName: string;
     age: number;
 }
+
 describe('pickMapGenerator', () => {
     it('should generate an empty map for an empty Array', () => {
         const pickMap = pickMapGenerator<Person>([]);
@@ -34,4 +35,26 @@ describe('pickMapGenerator', () => {
         expect(pickMap.lastName).toBeUndefined();
         expect(pickMap.age).toBeTruthy();
     });
+
+    it('should extract a partial Person', () => {
+        const person = {
+            firstName: "Martin",
+            lastName: "Hilscher",
+            age: 38
+        };
+
+        const pickMap = pickMapGenerator<Person>(['age']);
+
+        const result = extract(pickMap)(person);
+
+        expect(result).toEqual({age: 38});
+    })
+
+    it('should not extract anything from an emptry object', () => {
+        const pickMap = pickMapGenerator<Person>(['age']);
+
+        const result = extract(pickMap)({});
+
+        expect(result).toEqual({});
+    })
 });

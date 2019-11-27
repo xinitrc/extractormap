@@ -68,6 +68,11 @@ const target: T = extract<T>(extractorMap, input);
 **Hint:** ```extract``` and ```createExtractingProxy``` can also be called in curried form. 
 
 
+In addition there is a version of extract that allows for filtering values that are defined as empty:
+#### ```extractFilteringEmptys<T>(map: ExtractorMap<T>, input: data): T```
+Returns a eagerly constructed object of type ```T``` that is returnded from ```extractFilteringEmptys```. Any value
+contained in  ```valuesInterpretedasEmpty``` will result in the corresponding key not being present in the resulting
+object.
 
 ### Helper functions
 
@@ -86,6 +91,9 @@ and an optional result transformer which defaults to the identity function, retu
 (transformed) array of all properties value that match.
 #### ```constant<T>(value: T): (input: object => T)```:   
 Will return a function returning the given constant discregarding the input object completely.
+#### ```pickMapGenerator<T>(keys: Array<keyof T>): ExtractorMap<Partial<T>>``` 
+Will return an ExtractorMap that extracts the untransformed value of any key contained in the keys array and puts this
+value under the key by the same name in the output object.
 
 
 Given those helper functions the ExtractorMap from above could have been written as:
@@ -120,10 +128,10 @@ More complex target data structures allow for two distinct ways of providing an 
 
 ```typescript
 {
-  "foo": number,
-  "bar":  {
-    "first": string,
-    "second": number 
+  foo: number,
+  bar:  {
+    first: string,
+    second: number 
   }
 }
 ```
@@ -132,8 +140,8 @@ Can be extracted with an ```ExtractorMap``` like this:
 
 ```typescript
 {
-  "foo": jpv('qux'),
-  "bar":  jpv('quux')
+  foo: jpv('qux'),
+  bar:  jpv('quux')
 }
 ```
 
@@ -141,10 +149,10 @@ or
 
 ```typescript
 {
-  "foo": jpv('qux'),
-  "bar":  {
-    "first": jpv('quux.first'),
-    "second": jpv('quux.second') 
+  foo: jpv('qux'),
+  bar:  {
+    first: jpv('quux.first'),
+    second: jpv('quux.second') 
   }
 }
 ```

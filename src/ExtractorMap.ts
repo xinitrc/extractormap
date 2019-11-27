@@ -14,6 +14,19 @@ export function extract<T>(map: ExtractorMap<T>, input?: object): T | ExtractorF
     }
 }
 
+export function extractFilteringEmptys<T>(map: ExtractorMap<T>, valuesInterpretedasEmpty?: any[]): ExtractorFunction<T>;
+export function extractFilteringEmptys<T>(map: ExtractorMap<T>, valuesInterpretedasEmpty?: any[] | object, input?: any): ExtractorFunction<T>;
+export function extractFilteringEmptys<T>(map: ExtractorMap<T>, first?: any[] | object, second?: object): T | ExtractorFunction<T> {
+    const valuesInterpretedasEmpty = Array.isArray(first) ? first : [];
+    const input = Array.isArray(first) ? second : first;
+
+    if (typeof input === 'undefined') {
+        return (inputObject: object): T => extractFromObjectFilteringEmpties(inputObject, valuesInterpretedasEmpty, map);
+    } else {
+        return extractFromObjectFilteringEmpties(input, valuesInterpretedasEmpty, map);
+    }
+}
+
 function isExtractorFunction<T>(e: ExtractorFunction<T> | ExtractorMap<T>): e is ExtractorFunction<T> {
     return typeof e === 'function';
 }
@@ -24,6 +37,26 @@ function extractFromObject<T>(inputObject: object, extractionMap: ExtractorMap<T
 
     extractionKeys.forEach((extractionKey: keyof T): void => {
         resultObject[extractionKey] = _extractForKey(extractionMap, extractionKey, inputObject);
+    });
+
+    return resultObject as T;
+}
+
+function extractFromObjectFilteringEmpties<T>(inputObject: object, valuesInterpretedasEmpty: any[], extractionMap: ExtractorMap<T>): T {
+    const resultObject: Partial<T> = {};
+    const extractionKeys: Array<keyof T> = Object.keys(extractionMap) as Array<keyof T>;
+
+    extractionKeys.forEach((extractionKey: keyof T): void => {
+        const value = _extractForKey(extractionMap, extractionKey, inputObject);
+
+        // To to some advanced equivalency magic in javascript this is not equivalent to
+        // (valuesInterpretedasEmpty.indexOf(value) < 0)
+        // Trust me you don't want me to explain
+        const containedInExcludes = valuesInterpretedasEmpty.reduce( (a: boolean, b: any) => (!!a || b === value ), false);
+
+        if (!containedInExcludes) {
+            resultObject[extractionKey] = value;
+        }
     });
 
     return resultObject as T;

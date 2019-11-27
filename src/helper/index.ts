@@ -1,1 +1,1 @@
-export * from './PickMapGenerator';
+export * from './pickMapGenerator';
