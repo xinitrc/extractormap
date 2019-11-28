@@ -4,3 +4,7 @@ coverage
 .idea
 lib
 
+
+.scannerwork/
+
+test-report.xml
