@@ -23,3 +23,6 @@ artifacts:
     - LICENCE.md
     - README.md
     - buildspec-deploy.yml
+cache: 
+  paths:
+    - node_modules/**/*

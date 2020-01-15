@@ -21,9 +21,9 @@ to the type of the resulting object ```T```.
 
 ### ExtractorMap by example
 
-Given type target type ```T```:
+Given a target type ```T```:
 
-```typescrip
+```typescript
 {
   "foo": number,
   "bar": string
