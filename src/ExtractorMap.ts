@@ -14,9 +14,9 @@ export function extract<T>(map: ExtractorMap<T>, input?: object): T | ExtractorF
     }
 }
 
-export function extractFilteringEmpties<T>(map: ExtractorMap<T>, valuesInterpretedasEmpty?: any[]): ExtractorFunction<T>;
-export function extractFilteringEmpties<T>(map: ExtractorMap<T>, valuesInterpretedasEmpty?: any[] | object, input?: any): ExtractorFunction<T>;
-export function extractFilteringEmpties<T>(map: ExtractorMap<T>, first?: any[] | object, second?: object): T | ExtractorFunction<T> {
+export function extractFilteringEmpties<T>(map: ExtractorMap<T>, valuesInterpretedasEmpty?: any[]): ExtractorFunction<Partial<T>>;
+export function extractFilteringEmpties<T>(map: ExtractorMap<T>, valuesInterpretedasEmpty?: any[] | object, input?: object): Partial<T>;
+export function extractFilteringEmpties<T>(map: ExtractorMap<T>, first?: any[] | object, second?: object): Partial<T> | ExtractorFunction<Partial<T>> {
     const valuesInterpretedasEmpty = Array.isArray(first) ? first : [];
     const input = Array.isArray(first) ? second : first;
 
