@@ -4,6 +4,8 @@ export type ExtractorMap<T> = {
     [K in keyof T]: ExtractorFunction<T[K]> | ExtractorMap<T[K]>;
 };
 
+export type DeepPartial<T> = T extends object ? { [K in keyof T]?: DeepPartial<T[K]> } : T;
+
 export function extract<T>(map: ExtractorMap<T>, input: object): T;
 export function extract<T>(map: ExtractorMap<T>): ExtractorFunction<T>;
 export function extract<T>(map: ExtractorMap<T>, input?: object): T | ExtractorFunction<T> {
@@ -14,14 +16,14 @@ export function extract<T>(map: ExtractorMap<T>, input?: object): T | ExtractorF
     }
 }
 
-export function extractFilteringEmpties<T>(map: ExtractorMap<T>, valuesInterpretedasEmpty?: any[]): ExtractorFunction<Partial<T>>;
-export function extractFilteringEmpties<T>(map: ExtractorMap<T>, valuesInterpretedasEmpty?: any[] | object, input?: object): Partial<T>;
-export function extractFilteringEmpties<T>(map: ExtractorMap<T>, first?: any[] | object, second?: object): Partial<T> | ExtractorFunction<Partial<T>> {
+export function extractFilteringEmpties<T>(map: ExtractorMap<T>, valuesInterpretedasEmpty?: any[]): ExtractorFunction<DeepPartial<T>>;
+export function extractFilteringEmpties<T>(map: ExtractorMap<T>, valuesInterpretedasEmpty?: any[] | object, input?: object): DeepPartial<T>;
+export function extractFilteringEmpties<T>(map: ExtractorMap<T>, first?: any[] | object, second?: object): DeepPartial<T> | ExtractorFunction<DeepPartial<T>> {
     const valuesInterpretedasEmpty = Array.isArray(first) ? first : [];
     const input = Array.isArray(first) ? second : first;
 
     if (typeof input === 'undefined') {
-        return (inputObject: object): T => extractFromObjectFilteringEmpties(inputObject, valuesInterpretedasEmpty, map);
+        return (inputObject: object): DeepPartial<T> => extractFromObjectFilteringEmpties(inputObject, valuesInterpretedasEmpty, map);
     } else {
         return extractFromObjectFilteringEmpties(input, valuesInterpretedasEmpty, map);
     }
@@ -36,18 +38,18 @@ function extractFromObject<T>(inputObject: object, extractionMap: ExtractorMap<T
     const extractionKeys: Array<keyof T> = Object.keys(extractionMap) as Array<keyof T>;
 
     extractionKeys.forEach((extractionKey: keyof T): void => {
-        resultObject[extractionKey] = _extractForKey(extractionMap, extractionKey, inputObject);
+        resultObject[extractionKey] = _extractForKey(extractionMap, extractionKey, inputObject) as any; // screw this
     });
 
     return resultObject as T;
 }
 
-function extractFromObjectFilteringEmpties<T>(inputObject: object, valuesInterpretedasEmpty: any[], extractionMap: ExtractorMap<T>): T {
-    const resultObject: Partial<T> = {};
+function extractFromObjectFilteringEmpties<T>(inputObject: object, valuesInterpretedasEmpty: any[], extractionMap: ExtractorMap<T>): DeepPartial<T> {
+    const resultObject: DeepPartial<T> = {} as DeepPartial<T>;
     const extractionKeys: Array<keyof T> = Object.keys(extractionMap) as Array<keyof T>;
 
     extractionKeys.forEach((extractionKey: keyof T): void => {
-        const value = _extractForKey(extractionMap, extractionKey, inputObject);
+        const value = _extractForKey(extractionMap, extractionKey, inputObject, (map: ExtractorMap<T[keyof T]>, input?: object): DeepPartial<T[keyof T]> => extractFilteringEmpties(map, valuesInterpretedasEmpty, input));
 
         // To to some advanced equivalency magic in javascript this is not equivalent to
         // (valuesInterpretedasEmpty.indexOf(value) < 0)
@@ -55,11 +57,11 @@ function extractFromObjectFilteringEmpties<T>(inputObject: object, valuesInterpr
         const containedInExcludes = valuesInterpretedasEmpty.reduce( (a: boolean, b: any) => (!!a || b === value ), false);
 
         if (!containedInExcludes) {
-            resultObject[extractionKey] = value;
+            resultObject[extractionKey] = value as any; // screw this
         }
     });
 
-    return resultObject as T;
+    return resultObject;
 }
 
 export function createExtractingProxy<T>(eMap: ExtractorMap<T>, input: object): T;
@@ -80,13 +82,13 @@ export function createExtractingProxy<T>(eMap: ExtractorMap<T>, input?: object):
     }
 }
 
-function _extractForKey<T>(extractionMap: ExtractorMap<T>, extractionKey: keyof T, inputObject: object) {
+function _extractForKey<T>(extractionMap: ExtractorMap<T>, extractionKey: keyof T, inputObject: object, extractionFn: <PartialOrT>(map: ExtractorMap<T[keyof T]>, input?: object) => DeepPartial<T[keyof T]> | T[keyof T] = extract) {
     const extractor: ExtractorMap<T[keyof T]> | ExtractorFunction<T[keyof T]> = extractionMap[extractionKey];
 
     if (isExtractorFunction(extractor)) {
         return extractor(inputObject);
     } else {
-        return extract(extractor, inputObject);
+        return extractionFn(extractor, inputObject);
     }
 }
 
