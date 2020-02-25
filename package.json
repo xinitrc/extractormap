@@ -1,6 +1,6 @@
 {
   "name": "@jungehaie/extractormap",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Library to extrace one JSON datastructure from another",
   "scripts": {
     "lint": "./node_modules/tslint/bin/tslint -c ./tslint.json './src/**/*.ts'",
@@ -13,7 +13,8 @@
     "test": "npm run lint; npm run test:unit && npm run test:mutation",
     "updateSonarQube": "npm run test:coverage && sonar-scanner",
     "build": "rm -rf ./lib && ./node_modules/typescript/bin/tsc",
-    "deploy": "npm run lint && npm run test:unit && git push origin master && git push deploy master"
+    "deploy": "npm run lint && npm run test:unit && git push origin master && git push deploy master",
+    "prepublishOnly": "npm run lint && npm run test:unit && npm run build"
   },
   "author": "Martin Hilscher",
   "license": "MIT",
