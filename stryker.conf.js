@@ -1,14 +1,13 @@
-module.exports = function(config) {
-  config.set({
-    mutator: "typescript",
+module.exports =  {
+    allowConsoleColors: true,
+    buildCommand: 'npm run build',
+    checkers: ['typescript'],
+    coverageAnalysis: "perTest",
     packageManager: "npm",
-    reporters: ["html", "clear-text", "progress"],
+    reporters: ["html", "clear-text", "progress", "json"],
     testRunner: "jest",
-    transpilers: [],
-    coverageAnalysis: "off",
     tsconfigFile: "tsconfig.json",
     mutate: ["src/**/*.ts"],
     thresholds: { high: 90, low: 80, break: 80 },
-    files: ["src/**/*.ts", "tests/**/*.ts"]
-  });
+    ignorePatterns: ["**", "!src/**/*.ts", "!tests/**/*.ts"]
 };
