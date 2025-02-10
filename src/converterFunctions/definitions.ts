@@ -1,1 +1,1 @@
-export type ConverterFunction<T> = (object: any) => T;
+export type ConverterFunction<T, I = any> = (input: I) => T;

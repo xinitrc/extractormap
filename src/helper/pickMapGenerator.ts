@@ -1,6 +1,6 @@
 import {ExtractorMap, jpv} from '..';
 
-export function pickMapGenerator<T>(keys: Array<keyof T>): ExtractorMap<Partial<T>> {
+export function pickMapGenerator<T>(keys?: Array<keyof T>): ExtractorMap<Partial<T>> {
     const extractorMap = {};
 
     keys.forEach((key: keyof T) => {
