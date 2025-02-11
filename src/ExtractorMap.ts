@@ -44,12 +44,12 @@ function _convertExtractorMapToExtractorFunction<T, S extends Record<string, any
     };
 }
 
-function _proxyFactory<T, S extends Record<string, any>>(eMap: ExtractorMap<T, S>): ExtractorFunction<T, S> {
+function _proxyFactory<T, S extends Record<string, any>>(map: ExtractorMap<T, S>): ExtractorFunction<T, S> {
     return (input: S): T => {
         return new Proxy({}, {
             get(_: any, name: PropertyKey): any {
-                if (isKeyOfT(eMap, name)) {
-                    return extract<T[typeof name], S>(eMap[name], input);
+                if (isKeyOfT(map, name)) {
+                    return extract<T[typeof name], S>(map[name], input);
                 } else {
                     throw new ReferenceError(`Property "${name.toString()}" does not exist.`);
                 }
