@@ -1,7 +1,5 @@
 import {JSONPath} from 'jsonpath-plus';
-import {identity} from '../converterFunctions/baseConverter';
-import {ConverterFunction} from '../converterFunctions/definitions';
-import {ExtractorFunction, Path_Type} from '..';
+import {ExtractorFunction, Path_Type, ConverterFunction, identity} from '..';
 
 export function jpa<T>(jsonPath: string, convert: ConverterFunction<T> = identity): ExtractorFunction<T, Record<string, any>> {
     return (inputObject: Record<string, any>): T => {

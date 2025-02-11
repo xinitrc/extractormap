@@ -1,4 +1,4 @@
-import {ConverterFunction} from './definitions';
+import {ConverterFunction} from '..';
 
 function _answerWithDefault<T>(inputValue: unknown, forVals: unknown[]): inputValue is T {
     return forVals.filter((forVal: unknown) => inputValue === forVal).length > 0;

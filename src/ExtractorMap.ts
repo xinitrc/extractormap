@@ -1,4 +1,4 @@
-import {jpv} from './extractorFunctions/jsonPathExtractor';
+import {jpv} from '.';
 import {
     isExtractorFunction, isKeyOfT,
     isPath,
