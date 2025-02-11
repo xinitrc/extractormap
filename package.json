@@ -1,6 +1,7 @@
 {
   "name": "@jungehaie/extractormap",
-  "version": "2.0.0",
+  "version": "3.0.0",
+  "private": false,
   "description": "Library to extrace one JSON datastructure from another",
   "scripts": {
     "lint": "./node_modules/tslint/bin/tslint -c ./tslint.json './src/**/*.ts'",
@@ -8,13 +9,13 @@
     "test:unit:watch": "./node_modules/jest/bin/jest.js tests/unit --watch",
     "test:unit:coverage": "./node_modules/jest/bin/jest.js tests/unit --coverage",
     "test:unit:watch:coverage": "./node_modules/jest/bin/jest.js tests/unit --watch --coverage",
-    "test:coverage": "./node_modules/jest/bin/jest.js test --coverage",
+    "test:coverage": "./node_modules/jest/bin/jest.js ./tests/ --coverage",
     "test:mutation": "./node_modules/.bin/stryker run",
     "test:all:coverage": "npm run test:coverage && npm run test:mutation",
-    "test": "npm run lint; npm run test:unit && npm run test:mutation",
+    "test": "npm run lint; npm run test:coverage && npm run test:mutation",
     "build": "./node_modules/.bin/tsup",
     "deploy": "npm run lint && npm run test:unit && git push origin master && git push deploy master",
-    "prepublishOnly": "npm run lint && npm run test:unit && npm run build"
+    "prepublishOnly": "npm run lint && npm run test && npm run build"
   },
   "author": "Martin Hilscher",
   "license": "MIT",
@@ -23,9 +24,12 @@
   "module": "lib/index.js",
   "keywords": [
     "data mapper",
-    "extractor"
+    "data extractor"
   ],
   "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.ts"
+    ],
     "transform": {
       "^.+\\.tsx?$": "ts-jest"
     },
@@ -36,7 +40,6 @@
     "testPathIgnorePatterns": [
       "systemTests"
     ],
-    "testResultsProcessor": "jest-sonar-reporter",
     "moduleFileExtensions": [
       "ts",
       "tsx",
