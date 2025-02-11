@@ -47,13 +47,13 @@ export type DeepPartial<T> = T extends Record<string, any> ? { [K in keyof T]?: 
 export function extract<T, S extends Record<string, any> = any>(te: TypeExtractor<T, S>, input: S): T;
 export function extract<T, S extends Record<string, any> = any>(te: TypeExtractor<T, S>): ExtractorFunction<T, S>;
 export function extract<T, S extends Record<string, any>>(te: TypeExtractor<T, S>, input?: S): T | ExtractorFunction<T, S> {
-    const generateExtractorFunction: (te: TypeExtractor<T, S>) => ExtractorFunction<T, S> = (te: TypeExtractor<T, S>) => {
-        if (isPath(te)) {
-            return jpv(te);
-        } else if (isExtractorFunction<T, S>(te)) {
-            return te;
+    const generateExtractorFunction: (_te: TypeExtractor<T, S>) => ExtractorFunction<T, S> = (_te: TypeExtractor<T, S>): ExtractorFunction<T, S> => {
+        if (isPath(_te)) {
+            return jpv(_te);
+        } else if (isExtractorFunction<T, S>(_te)) {
+            return _te;
         } else {
-            return extractorFunctionFromExtractorMap(te);
+            return extractorFunctionFromExtractorMap(_te);
         }
     };
 
