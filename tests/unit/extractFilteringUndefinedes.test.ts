@@ -98,6 +98,9 @@ describe('fullExtractorMap', () => {
   it('should return { foo: { bar: 5 } for { foo: { bar: jpv("body") }}, { body: 5 }', () => {
     expect(extractFilteringEmpties<{foo: {bar: number } }>({foo: {bar: jpv('body')}}, [undefined], {body: 5})).toEqual({foo: {bar: 5}});
   });
+  it('should return { foo: { bar: 5 } for { foo: { bar: "body" }}, { body: 5 }', () => {
+    expect(extractFilteringEmpties<{foo: {bar: number } }>({foo: {bar: 'body'}}, [undefined], {body: 5})).toEqual({foo: {bar: 5}});
+  });
   it('should return { foo: { bar: 1 } for { foo: { bar: jpv("body") }}, { body: 1, pathParamters: "7" }', () => {
     expect(extractFilteringEmpties<{foo: {bar: number } }>({foo: {bar: jpv('body')}}, [undefined], {
       body: 1,
@@ -106,6 +109,12 @@ describe('fullExtractorMap', () => {
   });
   it('should return { } for { foo: { bar: jpv("body") }}, { blub: 1, pathParamters: "7" }', () => {
     expect(extractFilteringEmpties<{foo: {bar: number } }>({foo: {bar: jpv('body')}}, [undefined], {
+      blub: 1,
+      pathParamters: '7'
+    })).toEqual({foo: {bar: undefined}});
+  });
+  it('should return { } for { foo: { bar: "body" }}, { blub: 1, pathParamters: "7" }', () => {
+    expect(extractFilteringEmpties<{foo: {bar: number } }>({foo: {bar: 'body'}}, [undefined], {
       blub: 1,
       pathParamters: '7'
     })).toEqual({foo: {bar: undefined}});

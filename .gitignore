@@ -6,5 +6,8 @@ lib
 
 
 .scannerwork/
+.vscode
+tags
+.DS_STORE
 
 test-report.xml

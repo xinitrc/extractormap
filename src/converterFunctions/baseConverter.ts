@@ -8,7 +8,7 @@ export function identity<T, I>(x: I): T {
     return x as unknown as T;
 }
 
-export function defaultTo<T>(defaultValue: T, forVals: unknown[] = [undefined]): ConverterFunction<T> {
+export function defaultTo<T>(defaultValue: T, forVals: unknown[] = [undefined]): ConverterFunction<T, unknown> {
     return (inputValue: unknown): T => {
         const answerWithDefault = _answerWithDefault(inputValue, forVals);
 

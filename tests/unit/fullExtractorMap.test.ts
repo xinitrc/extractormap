@@ -144,7 +144,7 @@ it('should return { foo: 2 } for { foo: jpv("body"".[?(@.blub > 1)].blub") }, { 
     }
   })).toEqual({foo: 2});
 });
-it('should return { foo: 6 } for { foo: jpc("$..[?(@.blub > 1)].blub") }, { body: { blub: 1, key1: {blub: 2}, key2: {blub: 3}}}} in curried form', () => {
+it('should return { foo: 6 } for { foo: jpq("$..[?(@.blub > 1)].blub") }, { body: { blub: 1, key1: {blub: 2}, key2: {blub: 3}}}} in curried form', () => {
   expect(extract<{foo: number[]}>({foo: jpq('$..[?(@.blub > 1)].blub')})({
     body: {
       blub: 1,

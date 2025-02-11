@@ -14,15 +14,8 @@ export function jpq<T>(jsonPath: string, convert: ConverterFunction<T> = identit
         return JSONPath({json: inputObject, path: jsonPath}).map(convert);
     };
 }
-/*
-export function jpv<T>(jsonPath: string, convert: ConverterFunction<T> = identity): ExtractorFunction<T> {
-    return (inputObject: Record<string, any>): T => {
-        return convert(JSONPath({json: inputObject, path: jsonPath})[0]);
-    };
-}
-*/
 
-export function jpv<T, I, S extends Record<string, any> = any>(jsonPath: Path_Type<I, S>, _convert?: ConverterFunction<T, I>): ExtractorFunction<T, S> {
+export function jpv<T, S extends Record<string, any> = any, I = T>(jsonPath: Path_Type<I, S>, _convert?: ConverterFunction<T, I>): ExtractorFunction<T, S> {
     if (_convert === undefined) {
         return (inputObject: S): T => JSONPath({json: inputObject, path: jsonPath})[0] as T;
     } else {
