@@ -96,6 +96,14 @@ it('should return { } for { foo: { bar: jpv("body") }}, { blub: 1, pathParamters
   expect(extract<{foo: { bar: any }}>({foo: {bar: jpv('body')}}, {blub: 1, pathParamters: '7'})).toEqual({foo: {bar: undefined}});
 });
 
+it('should return { foo: { bar: 5 } for { foo: jpv("bar") }, { bar: { bar: 5 } }', () => {
+  expect(extract<{foo: { bar: number }}, {bar: { bar: number }}>({foo: jpv('bar')}, {bar: { bar: 5} })).toEqual({foo: {bar: 5}});
+});
+it('should return { foo: { bar: 5 } for { foo: "bar" }, { bar: { bar: 5 } }', () => {
+  expect(extract<{foo: { bar: number }}, {bar: {bar: number}}>({foo: 'bar'}, {bar: { bar: 5} })).toEqual({foo: {bar: 5}});
+});
+
+
 it('should return { foo: 1 } for { foo: 1 }, { foo: jpv("foo") } in curried form', () => {
   expect(extract<{foo: { bar: any }}>({foo: jpv('foo')})({foo: 1})).toEqual({foo: 1});
 });
