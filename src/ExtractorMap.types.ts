@@ -42,3 +42,18 @@ export type ExtractorMap<T, S extends Record<string, any> = any> = {
 };
 
 export type DeepPartial<T> = T extends Record<string, any> ? { [K in keyof T]?: DeepPartial<T[K]> } : T;
+
+
+/* Type Guards */
+export function isExtractorFunction<T, S extends Record<string, any>>(e: any): e is ExtractorFunction<T, S> {
+    return typeof e === 'function';
+}
+
+export function isPath(e: any): e is string {
+    return typeof e === 'string';
+}
+
+export function isKeyOfT<T, S extends Record<string, any>>(eMap: ExtractorMap<T, S>, keyUnderTest: string | number | symbol): keyUnderTest is keyof T {
+    return typeof eMap[keyUnderTest] !== 'undefined';
+}
+

@@ -1,24 +1,18 @@
 import {jpv} from './extractorFunctions/jsonPathExtractor';
-import {DeepPartial, ExtractorFunction, ExtractorMap, TypeExtractor} from './ExtractorMap.types';
-
-/* Type Guards */
-function _isExtractorFunction<T, S extends Record<string, any>>(e: any): e is ExtractorFunction<T, S> {
-    return typeof e === 'function';
-}
-
-function _isPath(e: any): e is string {
-    return typeof e === 'string';
-}
-
-function _isKeyOfT<T, S extends Record<string, any>>(eMap: ExtractorMap<T, S>, keyUnderTest: string | number | symbol): keyUnderTest is keyof T {
-    return typeof eMap[keyUnderTest] !== 'undefined';
-}
+import {
+    isExtractorFunction, isKeyOfT,
+    isPath,
+    DeepPartial,
+    ExtractorFunction,
+    ExtractorMap,
+    TypeExtractor
+} from './ExtractorMap.types';
 
 /* Helper Functions */
 function _convertTypeExtractorToExtractorFunction<T, S extends Record<string, any> = any, I = T>(typeExtractor: TypeExtractor<I, S>, valuesInterpretedAsEmpty?: unknown[]): ExtractorFunction<I, S> {
-    if (_isPath(typeExtractor)) {
+    if (isPath(typeExtractor)) {
         return jpv<I, S>(typeExtractor);
-    } else if (_isExtractorFunction<I, S>(typeExtractor)) {
+    } else if (isExtractorFunction<I, S>(typeExtractor)) {
         return typeExtractor;
     } else {
         return _convertExtractorMapToExtractorFunction<T, S, I>(typeExtractor, valuesInterpretedAsEmpty);
@@ -54,7 +48,7 @@ function _proxyFactory<T, S extends Record<string, any> = any>(eMap: ExtractorMa
     return (input: S): T => {
         return new Proxy({}, {
             get(_: any, name: PropertyKey): any {
-                if (_isKeyOfT(eMap, name)) {
+                if (isKeyOfT(eMap, name)) {
                     return extract<T[typeof name], S>(eMap[name], input);
                 } else {
                     throw new ReferenceError(`Property "${name.toString()}" does not exist.`);
