@@ -3,6 +3,7 @@ reports
 coverage
 .idea
 lib
+.stryker-tmp
 
 
 .vscode
