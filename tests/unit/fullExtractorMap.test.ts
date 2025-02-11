@@ -1,5 +1,4 @@
-import {constant, jpa, jpq, jpv, extract} from '../../src';
-import {createExtractingProxy} from '../../src/ExtractorMap';
+import {constant, jpa, jpq, jpv, extract, createExtractingProxy} from '../../src';
 
 it('should return { foo: 1 } for { foo: 1 }, { foo: jpv("foo") }', () => {
   expect(extract<{foo: number }>({foo: jpv('foo')}, {foo: 1})).toEqual({foo: 1});
