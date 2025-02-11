@@ -4,7 +4,7 @@ module.exports =  {
     checkers: ['typescript'],
     coverageAnalysis: "perTest",
     packageManager: "npm",
-    reporters: ["html", "progress", "json"],
+    reporters: ["html", "clear-text", "progress", "json"],
     testRunner: "jest",
     tsconfigFile: "tsconfig.json",
     mutate: ["src/**/*.ts"],
