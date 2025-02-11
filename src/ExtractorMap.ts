@@ -9,13 +9,13 @@ import {
 } from './ExtractorMap.types';
 
 /* Helper Functions */
-function _convertTypeExtractorToExtractorFunction<T, S extends Record<string, any> = any>(typeExtractor: TypeExtractor<T, S>, valuesInterpretedAsEmpty?: unknown[]): ExtractorFunction<T, S> {
+function _convertTypeExtractorToExtractorFunction<T, S extends Record<string, any>>(typeExtractor: TypeExtractor<T, S>, valuesInterpretedAsEmpty?: unknown[]): ExtractorFunction<T, S> {
     if (isPath(typeExtractor)) {
-        return jpv<T, S>(typeExtractor);
+        return jpv(typeExtractor);
     } else if (isExtractorFunction<T, S>(typeExtractor)) {
         return typeExtractor;
     } else {
-        return _convertExtractorMapToExtractorFunction<T, S>(typeExtractor, valuesInterpretedAsEmpty);
+        return _convertExtractorMapToExtractorFunction(typeExtractor, valuesInterpretedAsEmpty);
     }
 }
 
@@ -44,7 +44,7 @@ function _convertExtractorMapToExtractorFunction<T, S extends Record<string, any
     };
 }
 
-function _proxyFactory<T, S extends Record<string, any> = any>(eMap: ExtractorMap<T, S>): ExtractorFunction<T, S> {
+function _proxyFactory<T, S extends Record<string, any>>(eMap: ExtractorMap<T, S>): ExtractorFunction<T, S> {
     return (input: S): T => {
         return new Proxy({}, {
             get(_: any, name: PropertyKey): any {
