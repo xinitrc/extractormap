@@ -455,6 +455,6 @@ describe('with string as defaultValue for jpv', () => {
   });
 
   test('a string as value yields the same result as jpv when the queried jsonpath value is undefined', () => {
-    expect(extract<{foo: number}>({foo: 'notExistendValue'})(payload)).toEqual(extract<{foo: number}>({foo: jpv('notExistendValue')})(payload));
+    expect(extract<{foo: number}>({foo: 'notExistingValue'})(payload)).toEqual(extract<{foo: number}>({foo: jpv('notExistingValue')})(payload));
   });
 });

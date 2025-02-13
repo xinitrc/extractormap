@@ -32,7 +32,7 @@ function _convertExtractorMapToExtractorFunction<T, S extends Record<string, any
             if (typeof valuesInterpretedAsEmpty === 'undefined') {
                 resultObject[extractionKey] = value
             } else {
-                const containedInExcludes: boolean = valuesInterpretedAsEmpty.reduce((a: boolean, b: any): boolean => (!!a || b === value), false);
+                const containedInExcludes: boolean = valuesInterpretedAsEmpty.reduce((a: boolean, b: any): boolean => (a || (b === value)), false);
 
                 if (!containedInExcludes) {
                     resultObject[extractionKey] = value;

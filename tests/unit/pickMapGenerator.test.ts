@@ -28,7 +28,7 @@ describe('pickMapGenerator', () => {
         expect(pickMap.age).toBeUndefined();
     });
 
-    it('should generate an extractorMap with only one function for an array with only one (differen) key', () => {
+    it('should generate an extractorMap with only one function for an array with only one (different) key', () => {
         const pickMap = pickMapGenerator<Person>(['age']);
 
         expect(pickMap.firstName).toBeUndefined();
@@ -50,7 +50,7 @@ describe('pickMapGenerator', () => {
         expect(result).toEqual({age: 38});
     });
 
-    it('should not extract anything from an emptry object', () => {
+    it('should not extract anything from an empty object', () => {
         const pickMap = pickMapGenerator<Person>(['age']);
 
         const result = extract(pickMap)({});

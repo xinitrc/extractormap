@@ -1,7 +1,7 @@
 import {defaultTo} from '../../src';
 
 describe('defaultValueExtractor', () => {
-    it('should answer with defaultvalue for undefined', () => {
+    it('should answer with defaultValue for undefined', () => {
        const defaultValueFN = defaultTo('1');
        expect(defaultValueFN(undefined)).toEqual('1');
     });
