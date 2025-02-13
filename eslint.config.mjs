@@ -27,7 +27,6 @@ export default tseslint.config(
             '@typescript-eslint/no-explicit-any': 'off',
             '@typescript-eslint/no-empty-interface': 'off',
             '@typescript-eslint/array-type': 'off',
-            '@typescript-eslint/no-deprecated': 'error',
             'sort-imports': 'off',
             'sort-keys': 'off',
             'no-multiple-empty-lines': 'error'
