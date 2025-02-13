@@ -3,31 +3,41 @@
     "allowUnreachableCode": false,
     "allowUnusedLabels": false,
     "alwaysStrict": true,
-    "exactOptionalPropertyTypes": false,
+    "exactOptionalPropertyTypes": true,
     "noFallthroughCasesInSwitch": true,
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "noImplicitOverride": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
-    "noImplicitUseStrict": false,
     "noPropertyAccessFromIndexSignature": true,
     "noUncheckedIndexedAccess": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": false,
-    "strict": false,
+    "noUnusedParameters": true,
+    "strict": true,
     "strictBindCallApply": true,
+    "strictBuiltinIteratorReturn":  true,
     "strictFunctionTypes": true,
-    "strictNullChecks": false,
-    "strictPropertyInitialization": false,
+    "strictNullChecks": true,
+    "strictPropertyInitialization": true,
     "useUnknownInCatchVariables": true,
 
+    "module": "node16",
 
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "module": "commonjs",
     "declaration": true,
+    "noEmitOnError": true,
+    "outDir": "./lib",
+
     "target": "es2020",
-    "outDir": "./lib"
+
+    "forceConsistentCasingInFileNames": true,
+
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts", "tests/**/*.test.ts"],
+  "exclude": [
+    "eslint.config.mjs",
+    "lib/**"
+  ]
 }
+

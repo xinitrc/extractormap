@@ -1,4 +1,4 @@
-import { defineConfig } from "tsup";
+import {defineConfig} from 'tsup';
 
 export default defineConfig({
     clean: true,
@@ -9,6 +9,6 @@ export default defineConfig({
     outDir: 'lib',
     platform: 'node',
     splitting: true,
-    sourcemap: false,
+    sourcemap: false
 });
 

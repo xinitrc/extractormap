@@ -38,8 +38,8 @@ describe('pickMapGenerator', () => {
 
     it('should extract a partial Person', () => {
         const person = {
-            firstName: "Martin",
-            lastName: "Hilscher",
+            firstName: 'Martin',
+            lastName: 'Hilscher',
             age: 38
         };
 
@@ -48,7 +48,7 @@ describe('pickMapGenerator', () => {
         const result = extract(pickMap)(person);
 
         expect(result).toEqual({age: 38});
-    })
+    });
 
     it('should not extract anything from an emptry object', () => {
         const pickMap = pickMapGenerator<Person>(['age']);
@@ -56,5 +56,5 @@ describe('pickMapGenerator', () => {
         const result = extract(pickMap)({});
 
         expect(result).toEqual({});
-    })
+    });
 });

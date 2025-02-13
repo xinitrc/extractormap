@@ -9,7 +9,7 @@ import {
 } from './ExtractorMap.types';
 
 /* Helper Functions */
-function _convertTypeExtractorToExtractorFunction<T, S extends Record<string, any>>(typeExtractor: TypeExtractor<T, S>, valuesInterpretedAsEmpty?: unknown[]): ExtractorFunction<T, S> {
+function _convertTypeExtractorToExtractorFunction<T, S extends Record<string, any>>(typeExtractor: TypeExtractor<T, S>, valuesInterpretedAsEmpty?: Array<unknown>): ExtractorFunction<T, S> {
     if (isPath(typeExtractor)) {
         return jpv(typeExtractor);
     } else if (isExtractorFunction<T, S>(typeExtractor)) {
@@ -19,7 +19,7 @@ function _convertTypeExtractorToExtractorFunction<T, S extends Record<string, an
     }
 }
 
-function _convertExtractorMapToExtractorFunction<T, S extends Record<string, any>>(extractionMap: ExtractorMap<T, S>, valuesInterpretedAsEmpty?: unknown[]): ExtractorFunction<T, S> {
+function _convertExtractorMapToExtractorFunction<T, S extends Record<string, any>>(extractionMap: ExtractorMap<T, S>, valuesInterpretedAsEmpty?: Array<unknown>): ExtractorFunction<T, S> {
     return (input: S): T => {
         const resultObject: Partial<T> = {};
         const extractionKeys: Array<keyof T> = Object.keys(extractionMap) as Array<keyof T>;
@@ -58,18 +58,16 @@ function _proxyFactory<T, S extends Record<string, any>>(map: ExtractorMap<T, S>
     };
 }
 
-function _extractorFactory<T, S extends Record<string, any> = any>(extractorFunction: ExtractorFunction<T, S>, input: S): T;
-function _extractorFactory<T, S extends Record<string, any> = any>(extractorFunction: ExtractorFunction<T, S>): ExtractorFunction<T, S>;
-function _extractorFactory<T, S extends Record<string, any> = any>(extractorFunction: ExtractorFunction<T, S>, input?: S): T | ExtractorFunction<T, S> {
+function _extractorFactory<T, S extends Record<string, any> = any>(extractorFunction: ExtractorFunction<T, S>, input: S | undefined): T | ExtractorFunction<T, S> {
     return typeof input === 'undefined' ? extractorFunction : extractorFunction(input);
 }
 
 /** Exported module functionality */
-export function extractFilteringEmpties<T, S extends Record<string, any> = any>(map: ExtractorMap<DeepPartial<T>, S>, valuesInterpretedAsEmpty?: unknown[]): ExtractorFunction<DeepPartial<T>, S>;
-export function extractFilteringEmpties<T, S extends Record<string, any> = any>(map: ExtractorMap<DeepPartial<T>, S>, valuesInterpretedAsEmpty?: unknown[] | S, input?: S): DeepPartial<T>;
-export function extractFilteringEmpties<T, S extends Record<string, any> = any>(map: ExtractorMap<DeepPartial<T>, S>, first?: unknown[] | S, second?: S): DeepPartial<T> | ExtractorFunction<DeepPartial<T>, S> {
-    const valuesInterpretedAsEmpty: unknown[] = Array.isArray(first) ? first : [];
-    const input: S = Array.isArray(first) ? second : first;
+export function extractFilteringEmpties<T, S extends Record<string, any> = any>(map: ExtractorMap<DeepPartial<T>, S>, valuesInterpretedAsEmpty?: Array<unknown>): ExtractorFunction<DeepPartial<T>, S>;
+export function extractFilteringEmpties<T, S extends Record<string, any> = any>(map: ExtractorMap<DeepPartial<T>, S>, valuesInterpretedAsEmpty?: Array<unknown> | S, input?: S): DeepPartial<T>;
+export function extractFilteringEmpties<T, S extends Record<string, any> = any>(map: ExtractorMap<DeepPartial<T>, S>, first: Array<unknown> | S, second?: S): DeepPartial<T> | ExtractorFunction<DeepPartial<T>, S> {
+    const valuesInterpretedAsEmpty: Array<unknown> = Array.isArray(first) ? first : [];
+    const input: S | undefined = Array.isArray(first) ? second : first;
 
     return _extractorFactory(_convertExtractorMapToExtractorFunction<DeepPartial<T>, S>(map, valuesInterpretedAsEmpty), input);
 }
