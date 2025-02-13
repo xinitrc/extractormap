@@ -55,5 +55,5 @@ export function isPath(e: any): e is string {
 }
 
 export function isKeyOfT<T, S extends Record<string, any>>(map: ExtractorMap<T, S>, keyUnderTest: string | number | symbol): keyUnderTest is keyof T {
-    return Object.prototype.hasOwnProperty.call(map, keyUnderTest);
+    return Object.hasOwn(map, keyUnderTest);
 }
