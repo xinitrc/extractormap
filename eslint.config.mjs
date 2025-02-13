@@ -6,6 +6,9 @@ import stylistic from '@stylistic/eslint-plugin-ts';
 
 export default tseslint.config(
     {
+        plugins: {
+            '@stylistic': stylistic
+        },
         files: [
             'src/**/*.ts',
             'tests/**/*.ts'
@@ -33,9 +36,6 @@ export default tseslint.config(
         }
     },
     {
-        plugins: {
-            '@stylistic': stylistic
-        },
         rules: {
             '@stylistic/quotes': ['error', 'single'],
             '@stylistic/comma-dangle': ['error', 'never'],
