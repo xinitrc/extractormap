@@ -26,9 +26,9 @@ type _PathValueTuple<T> = { [PT in _Path<T>]: _PathValue<T, PT> };
 
 type _Collect<T, V> = { [K in keyof T]: T[K] extends V ? K : never }[keyof T];
 
-type _PathForType<IN, T> = _Collect<_PathValueTuple<IN>, T>;
+type _PathForType<T, IN> = _Collect<_PathValueTuple<IN>, T>;
 
-export type Path_Type<T, S> = Record<string, any> extends S ? string : _PathForType<S, T> & string;
+export type Path_Type<T, S> = Record<string, any> extends S ? string : _PathForType<T, S> & string;
 
 export type TypeExtractor<T, S extends Record<string, any>> =
     (T extends Record<string, any> ? ExtractorMap<T, S> : never)
