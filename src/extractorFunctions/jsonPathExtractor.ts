@@ -1,15 +1,17 @@
 import {JSONPath} from 'jsonpath-plus';
 import {ExtractorFunction, Path_Type, ConverterFunction, identity, fmap, compose} from '..';
 
+const first: (input: any[]) => any = (input: any[]): any => input[0];
+
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
+const asT: <T>(input: any) => T = <T>(input: any): T => input as T;
+
 function jsonPathExtraction(jsonPath: string): ExtractorFunction<any[], Record<string, any>> {
     return (input: Record<string, any>): any => JSONPath({json: input, path: jsonPath});
 }
 
 function jsonPathExtractionFirst<T, S extends Record<string, any>>(jsonPath: string): ExtractorFunction<T, S> {
-    const first = (input: any[]): any => input[0];
-    const asT = (input: any): T => input as T;
-
-    return compose(asT, first, jsonPathExtraction(jsonPath));
+    return compose(asT<T>, first, jsonPathExtraction(jsonPath));
 }
 
 export function jpa<T>(jsonPath: string, convert: ConverterFunction<T, any[]> = identity): ExtractorFunction<T, Record<string, any>> {
