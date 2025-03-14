@@ -11,7 +11,7 @@ type _Tail<T extends readonly unknown[]> = T extends readonly [any, ...infer RST
 // First Parameter, if input is function
 type _ConditionalFirstParameter<T> = T extends (x: infer P) => unknown ? P : never;
 
-// Check if array is composable types
+// Check if array is an array   of composable functions
 type _IsComposable<OutputT, FN> = FN extends (x: any) => OutputT ? true : false;
 type _AreComposable<OutputT, InputT, FNs extends readonly unknown[]> = FNs['length'] extends 0 ? _EQ<OutputT, InputT>
     : _AND<_IsComposable<OutputT, FNs[0]>, _AreComposable<_ConditionalFirstParameter<FNs[0]>, InputT, _Tail<FNs>>>;
@@ -20,7 +20,8 @@ type _Composables<OutputT, InputT, FNs extends readonly unknown[]> = _AreComposa
 type UnaryFunction<O, I> = (input: I) => O;
 export type ComposeInput<Z, Y, B, A, K extends readonly unknown[]> = [UnaryFunction<Z, Y>, ..._Composables<Y, B, K>, UnaryFunction<B, A>];
 
-/** This function implements general functional composition
+/**
+ * This function implements general functional composition
  * it combines the functions from right to left (as is usual in mathematics)
  * compose(f, g, h) is equivalent to (input) => f(g(h(input)))
  * the input and output type will make sure that the types of the functions
