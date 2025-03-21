@@ -48,7 +48,7 @@
     "@stryker-mutator/typescript-checker": "^8.7.1",
     "@stylistic/eslint-plugin-ts": "^4.2.0",
     "@types/jest": "^29.5.14",
-    "@types/node": "^22.13.10",
+    "@types/node": "^22.13.11",
     "commitlint": "^19.8.0",
     "eslint": "^9.22.0",
     "husky": "^9.1.7",
@@ -60,7 +60,7 @@
     "ts-jest": "^29.2.6",
     "tsup": "^8.4.0",
     "typescript": "^5.8.2",
-    "typescript-eslint": "^8.26.1"
+    "typescript-eslint": "^8.27.0"
   },
   "dependencies": {
     "jsonpath-plus": "^10.3.0"
