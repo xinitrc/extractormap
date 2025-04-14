@@ -49,7 +49,7 @@
     "@stryker-mutator/typescript-checker": "^8.7.1",
     "@stylistic/eslint-plugin-ts": "^4.2.0",
     "@types/jest": "^29.5.14",
-    "@types/node": "^22.14.0",
+    "@types/node": "^22.14.1",
     "commitlint": "^19.8.0",
     "eslint": "^9.24.0",
     "husky": "^9.1.7",
@@ -58,7 +58,7 @@
     "semantic-release": "^24.2.3",
     "stryker-cli": "^1.0.2",
     "terser": "^5.39.0",
-    "ts-jest": "^29.3.1",
+    "ts-jest": "^29.3.2",
     "tsup": "^8.4.0",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.29.1"
