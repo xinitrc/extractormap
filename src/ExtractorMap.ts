@@ -9,7 +9,7 @@ import {
 } from './ExtractorMap.types';
 
 /* Helper Functions */
-function _convertTypeExtractorToExtractorFunction<T, S extends Record<string, any>>(typeExtractor: TypeExtractor<T, S>, valuesInterpretedAsEmpty?: Array<unknown>): ExtractorFunction<T, S> {
+function _convertTypeExtractorToExtractorFunction<T, S extends Record<string, any>>(typeExtractor: TypeExtractor<T, S>, valuesInterpretedAsEmpty: Array<unknown> = []): ExtractorFunction<T, S> {
     if (isPath(typeExtractor)) {
         return jpv(typeExtractor);
     } else if (isExtractorFunction<T, S>(typeExtractor)) {
@@ -19,7 +19,7 @@ function _convertTypeExtractorToExtractorFunction<T, S extends Record<string, an
     }
 }
 
-function _convertExtractorMapToExtractorFunction<T, S extends Record<string, any>>(extractionMap: ExtractorMap<T, S>, valuesInterpretedAsEmpty?: Array<unknown>): ExtractorFunction<T, S> {
+function _convertExtractorMapToExtractorFunction<T, S extends Record<string, any>>(extractionMap: ExtractorMap<T, S>, valuesInterpretedAsEmpty: Array<unknown> = []): ExtractorFunction<T, S> {
     return (input: S): T => {
         const resultObject: Partial<T> = {};
         const extractionKeys: Array<keyof T> = Object.keys(extractionMap) as Array<keyof T>;
@@ -29,14 +29,10 @@ function _convertExtractorMapToExtractorFunction<T, S extends Record<string, any
 
             const value: T[typeof extractionKey] = extractor(input);
 
-            if (typeof valuesInterpretedAsEmpty === 'undefined') {
-                resultObject[extractionKey] = value;
-            } else {
-                const containedInExcludes: boolean = valuesInterpretedAsEmpty.reduce((a: boolean, b: any): boolean => (a || (b === value)), false);
+            const containedInExcludes: boolean = valuesInterpretedAsEmpty.reduce((a: boolean, b: any): boolean => (a || (b === value)), false);
 
-                if (!containedInExcludes) {
-                    resultObject[extractionKey] = value;
-                }
+            if (!containedInExcludes) {
+                resultObject[extractionKey] = value;
             }
         });
 
