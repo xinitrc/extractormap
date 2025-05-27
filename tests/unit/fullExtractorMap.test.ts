@@ -43,6 +43,10 @@ it('should return { foo: 1 } for { body: 1 }, {foo: 1 }', () => {
 it('should return { foo: [1, 2, 3] } for { foo: jpv("body") }, { body: [1, 2, 3] }', () => {
   expect(extract<{foo: number }>({foo: jpv('body')}, {body: [1, 2, 3]})).toEqual({foo: [1, 2, 3]});
 });
+it('should return { foo: "Stryker was here" } for { foo: jpv("body") }, { body: "Stryker was here" }', () => {
+  expect(extract<{foo: string }>({foo: jpv('body')}, {body: 'Stryker was here'})).toEqual({foo: 'Stryker was here'});
+});
+
 it('should return { foo: [1, 2, 3] } for { foo: jpq("$..key0") }, { body: { key0: 1, key1: {key0: 2}, key2: {key0: 3}}}}', () => {
   expect(extract<{foo: number[] }>({foo: jpq('$..key0')}, {
     body: {
@@ -220,7 +224,6 @@ it('should return { foo: { bar: 1 } for { foo: { bar: jpv("body") }}, { body: 1,
 it('should return { } for { foo: { bar: jpv("body") }}, { key0: 1, pathParameters: "7" } in curried form', () => {
   expect(extract<{foo: { bar: number }}>({foo: {bar: jpv('body')}})({key0: 1, pathParameters: '7'})).toEqual({foo: {bar: undefined}});
 });
-
 it('should return { foo: 1 } for { foo: 1 }, { foo: jpv("foo") }', () => {
   expect(createExtractingProxy({foo: jpv('foo')}, {foo: 1}).foo).toEqual(1);
 });

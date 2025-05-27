@@ -19,7 +19,7 @@ function _convertTypeExtractorToExtractorFunction<T, S extends Record<string, an
     }
 }
 
-function _convertExtractorMapToExtractorFunction<T, S extends Record<string, any>>(extractionMap: ExtractorMap<T, S>, valuesInterpretedAsEmpty: Array<unknown> = []): ExtractorFunction<T, S> {
+function _convertExtractorMapToExtractorFunction<T, S extends Record<string, any>>(extractionMap: ExtractorMap<T, S>, valuesInterpretedAsEmpty: Array<unknown>): ExtractorFunction<T, S> {
     return (input: S): T => {
         const resultObject: Partial<T> = {};
         const extractionKeys: Array<keyof T> = Object.keys(extractionMap) as Array<keyof T>;
