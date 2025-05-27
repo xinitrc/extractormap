@@ -1,76 +1,69 @@
 {
   "name": "@jungehaie/extractormap",
-  "version": "0.1.1",
-  "description": "Library to extrace one JSON datastructure from another",
+  "version": "3.0.1",
+  "private": false,
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/",
+    "tag": "latest"
+  },
+  "description": "Library to extract one JSON data structure from another",
   "scripts": {
-    "lint": "./node_modules/tslint/bin/tslint -c ./tslint.json './src/**/*.ts'",
-    "test:unit": "./node_modules/jest/bin/jest.js tests/unit",
-    "test:unit:watch": "./node_modules/jest/bin/jest.js tests/unit --watch",
-    "test:unit:coverage": "./node_modules/jest/bin/jest.js tests/unit --coverage",
-    "test:unit:watch:coverage": "./node_modules/jest/bin/jest.js tests/unit --watch --coverage",
-    "test:coverage": "./node_modules/jest/bin/jest.js test --coverage",
-    "test:mutation": "./node_modules/stryker-cli/bin/stryker-cli run",
-    "test": "npm run lint; npm run test:unit && npm run test:mutation",
-    "updateSonarQube": "npm run test:coverage && sonar-scanner",
-    "build": "rm -rf ./lib && ./node_modules/typescript/bin/tsc",
+    "lint:src": "npx eslint ./src",
+    "lint:tests": "npx eslint ./tests",
+    "lint": "npm run lint:src && npm run lint:tests",
+    "test:unit": "npx jest tests/unit",
+    "test:unit:watch": "npx jest tests/unit --watch",
+    "test:unit:coverage": "npx jest tests/unit --coverage",
+    "test:unit:watch:coverage": "npx jest tests/unit --watch --coverage",
+    "test:coverage": "npx jest tests/ --coverage",
+    "test:mutation": "npx stryker-cli run",
+    "test:all:coverage": "npm run test:coverage && npm run test:mutation",
+    "test": "npm run lint; npm run test:coverage && npm run test:mutation",
+    "build": "npx tsup",
     "deploy": "npm run lint && npm run test:unit && git push origin master && git push deploy master",
-    "prepublishOnly": "npm run lint && npm run test:unit && npm run build"
+    "prepublishOnly": "NODE_ENV=production npm audit && npm run lint && npm run test && npm run build",
+    "checkForUpdatedDependencies": "npx npm-check-updates --format group",
+    "updatedDependencies": "npx npm-check-updates --upgrade",
+    "updatedDependenciesInteractive": "npx npm-check-updates --interactive --format group",
+    "prepare": "husky"
   },
   "author": "Martin Hilscher",
   "license": "MIT",
+
   "types": "lib/index.d.ts",
   "main": "lib/index.js",
   "module": "lib/index.js",
   "keywords": [
     "data mapper",
-    "extractor"
+    "data extractor"
   ],
-  "jest": {
-    "transform": {
-      "^.+\\.tsx?$": "ts-jest"
-    },
-    "setupFilesAfterEnv": [
-      "jest-extended"
-    ],
-    "testRegex": "((\\.|/)(test|spec))\\.(jsx?|tsx?)$",
-    "testPathIgnorePatterns": [
-      "systemTests"
-    ],
-    "testResultsProcessor": "jest-sonar-reporter",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "jsx",
-      "json",
-      "node"
-    ],
-    "coverageThreshold": {
-      "global": {
-        "branches": 90,
-        "functions": 90,
-        "lines": 90,
-        "statements": -10
-      }
-    }
-  },
   "devDependencies": {
-    "@stryker-mutator/core": "^2.2.1",
-    "@stryker-mutator/html-reporter": "^2.2.1",
-    "@stryker-mutator/jest-runner": "^2.2.1",
-    "@stryker-mutator/typescript": "^2.2.1",
-    "@types/jest": "^24.0.22",
-    "@types/node": "^12.12.7",
-    "jest": "^24.9.0",
-    "jest-extended": "^0.11.2",
-    "jest-sonar-reporter": "^2.0.0",
-    "stryker-cli": "^1.0.0",
-    "ts-jest": "^24.1.0",
-    "tslint": "^5.20.1",
-    "tslint-clean-code": "^0.2.10",
-    "typescript": "^3.7.2"
+    "@commitlint/config-angular": "^19.8.1",
+    "@eslint/js": "^9.27.0",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^11.0.3",
+    "@stryker-mutator/core": "^9.0.1",
+    "@stryker-mutator/jest-runner": "^9.0.1",
+    "@stryker-mutator/typescript-checker": "^9.0.1",
+    "@stylistic/eslint-plugin-ts": "^4.4.0",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.15.21",
+    "commitlint": "^19.8.1",
+    "eslint": "^9.27.0",
+    "husky": "^9.1.7",
+    "jest": "^29.7.0",
+    "jest-extended": "^5.0.3",
+    "semantic-release": "^24.2.5",
+    "stryker-cli": "^1.0.2",
+    "terser": "^5.39.2",
+    "ts-jest": "^29.3.4",
+    "tsup": "^8.5.0",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.32.1"
   },
   "dependencies": {
-    "jsonpath-plus": "^1.1.0"
+    "jsonpath-plus": "^10.3.0"
   }
 }
