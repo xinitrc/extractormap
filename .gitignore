@@ -1,10 +1,11 @@
+.stryker-tmp
+.DS_STORE
+.vscode
+.idea
+
 node_modules
+
 reports
 coverage
-.idea
+
 lib
-
-
-.scannerwork/
-
-test-report.xml

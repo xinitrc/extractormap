@@ -1,17 +1,21 @@
-import {ConverterFunction} from './definitions';
+import {ConverterFunction} from '..';
 
-function _answerWithDefault(inputValues: any, forVals: any[]): boolean {
-    return forVals.filter((forVal: any) => inputValues === forVal).length > 0;
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
+function _answerWithInput<T, Unknonws extends readonly unknown[]>(inputValue: unknown, forVals: Unknonws): inputValue is T {
+    return forVals.filter((forVal: unknown): boolean => inputValue === forVal).length <= 0;
 }
 
-export function identity<T>(x: T): T {
-    return x;
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-type-parameters
+export function identity<T, I>(x: I): T {
+    return x as unknown as T;
 }
 
-export function defaultTo<T>(defaultValue: T, forVals: any[] = [undefined]): ConverterFunction<T> {
-    return (inputValue: any): T => {
-        const answerWithDefault: boolean = _answerWithDefault(inputValue, forVals);
+function _defaultTo<T, UKNS extends readonly unknown[]>(defaultValue: T, forVals: UKNS): ConverterFunction<T, T | UKNS[number]> {
+    return (inputValue: T | UKNS[number]): T => _answerWithInput<T, UKNS>(inputValue, forVals) ? inputValue : defaultValue;
+}
 
-        return answerWithDefault ? defaultValue : inputValue;
-    };
+export function defaultTo<T>(defaultValue: T): ConverterFunction<T, T | undefined>
+export function defaultTo<T, UKNS extends readonly unknown[]>(defaultValue: T, forVals: UKNS): ConverterFunction<T, T | UKNS[number]>
+export function defaultTo<T, UKNS extends readonly unknown[]>(defaultValue: T, forVals?: UKNS): unknown {
+    return _defaultTo(defaultValue, forVals ?? [undefined]);
 }
